@@ -16,20 +16,7 @@ import com.google.gson.*;
 
 
 
-public class FacebookLogin extends Controller {
-
-  public static void authorize(String state){
-    //IMPORTANT: "state" is double UTF-8 encoded 
-    //WARN: have to use &state as parameter name (check oauth api for more ...)
-    //Note: "state" is the url that the user is currently on, and the page that will finaly redirect to
-    String url = StringUtils.EMPTY;
-    if(state == null || !StringUtils.isNotBlank(state) || state.equals("null")){
-      url = getFacebookCode(); 
-    }else{
-      url = getFacebookCode() + "&state=" + state;
-    }
-    redirect(url);
-  }
+public class FacebookLogin extends Controller{
 
   private static JsonParser parser = new JsonParser(); 
 
@@ -79,20 +66,6 @@ public class FacebookLogin extends Controller {
     }
     return json;
   }
-  //[Facebook athentication step.4] if property dosn't exist, fill in data
-  public static JsonObject initFacebookUserInfo(JsonObject info){
-    if(!info.has("error")){
-      String[] data = {"name", "location", "about", "gender", "birthday", "locationId", "bio" };
-      for(String s : data){
-        if(!info.has(s)){
-          Logger.info("new property filled in:" + s);
-          info.addProperty(s, StringUtils.EMPTY);
-        }
-      }
-    }
-    return info;
-  }
-
   // --v--        Utility       --v-- //
   //check after getting user info (json)
   //TODO : check Weibo json
@@ -116,5 +89,15 @@ public class FacebookLogin extends Controller {
     }catch(Exception e){
       Logger.info(e, "Error! setErrorMessage");
     }
+  }
+  //map
+  public static JsonObject initUserInfo(JsonObject json, Map<String, String> data){
+    for(String key : data.keySet()){
+      if(!json.has(key)){
+        Logger.info("key: " + key);
+        json.addProperty(key, data.get(key));
+      }
+    }
+    return json;
   }
 }
