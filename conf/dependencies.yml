@@ -2,3 +2,4 @@ self: play -> fbLogin 0.1
 
 require:
     - play
+    - org.apache.commons -> commons-lang3 3.1

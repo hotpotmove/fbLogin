@@ -40,6 +40,7 @@ public class FacebookLogin extends Controller{
       params.put("redirect_uri", Play.configuration.getProperty("facebookLogin.redirect_uri"));
       params.put("client_secret", Play.configuration.getProperty("facebookLogin.secret"));
       params.put("code", code);
+      Logger.info(url);
       String callbackData = WS.url(url).params(params).post().getString();
       Logger.info("aat:" + callbackData);
       if(StringUtils.contains(callbackData,"access_token")){
